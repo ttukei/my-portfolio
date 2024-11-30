@@ -2,7 +2,12 @@ import React, { Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import clsx from 'clsx';
 
-const AllSeeingEyeModel = ({children, className}) => {
+interface Props {
+    children?: ReactNode;
+    className?: string;
+}
+
+const AllSeeingEyeModel: React.FC<Props>= ({children, className}) => {
     
     return (
         <Canvas className={clsx("w-screen h-screen relative", className)}>
