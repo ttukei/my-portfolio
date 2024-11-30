@@ -1,8 +1,11 @@
+
+
 export default function Home() {
   return (
-    <div>
-      <main>
-      </main>
-    </div>
+    <main>
+      <div className="w-full h-screen">
+        <h1>under construction</h1>
+      </div>
+    </main>
   );
 }
