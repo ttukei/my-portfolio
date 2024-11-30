@@ -1,4 +1,5 @@
 import React, { Suspense } from 'react';
+import { ReactNode } from 'react';
 import { Canvas } from '@react-three/fiber';
 import clsx from 'clsx';
 
