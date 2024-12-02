@@ -9,20 +9,25 @@
   }
 }
 
+@font-face {
+  font-family: 'DotGothic16';
+  src: url('/fonts/DotGothic16-Regular.ttf') format('truetype'); /* Use format 'truetype' for .ttf files */
+  font-weight: normal;
+  font-style: normal;
+}
+
 body {
+  font-family: 'DotGothic16', sans-serif;
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
 }
+
+
+
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
-}
 
-.content {
-  padding: 20px;
-  background: #fff;
-  color: #000;
 }
