@@ -1,111 +1,172 @@
-// app/page.tsx
-
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { useScroll, useTransform, motion } from 'framer-motion';
 import ThreeScene from './components/models/ThreeScene';
-import { Parallax, ParallaxLayer } from '@react-spring/parallax';
-import Loader from './components/Loader';
-import 'tailwindcss/tailwind.css';
-import '../styles/globals.css';
+import Image from 'next/image';
+import gsap from 'gsap';
+import styles from './page.module.scss'
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
+  const container = useRef<HTMLDivElement>(null);
+  const firstText = useRef(null);
+  const secondText = useRef(null);
+  const slider = useRef(null);
+  let xPercent = 0;
+  let direction = -1;
+
+  const { scrollYProgress } = useScroll({
+    target: container,
+    offset: ["start start", "end end"]
+  });
 
   useEffect(() => {
     // Simulate loading time
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 3880); // Adjust the loading time as needed
+    }, 20); // Adjust the loading time as needed
 
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    if (!loading) {
+      gsap.to(slider.current, {
+        scrollTrigger: {
+          trigger: document.documentElement,
+          scrub: 0.25,
+          start: 0,
+          end: window.innerHeight,
+          onUpdate: e => direction = e.direction * -1
+        },
+        x: "-500px",
+      });
+      requestAnimationFrame(animate);
+    }
+  }, [loading]);
+
+  const animate = () => {
+    if (xPercent < -100) {
+      xPercent = 0;
+    } else if (xPercent > 0) {
+      xPercent = -100;
+    }
+    gsap.set(firstText.current, { xPercent: xPercent });
+    gsap.set(secondText.current, { xPercent: xPercent });
+    requestAnimationFrame(animate);
+    xPercent += 0.1 * direction;
+  };
 
   if (loading) {
     return <Loader />;
   }
 
   return (
-    <main className="h-screen flex flex-col justify-between bg-black">
-      <Parallax pages={4}>
-        {/* First Parallax Layer (3D Scene) */}
-        <ParallaxLayer offset={0} speed={0.5}>
-          <ThreeScene />
-          <h1>Projects</h1>
-          <div className="absolute left-0 right-0 flex justify-between items-start z-10">
-            <div
-              className="text-white text-4xl tracking-widest flex flex-col items-start pl-10 relative"
-              style={{
-                top: '-790px',
-              }}
-            >
-              {`The waves of innovation are infinite`.split(' ').map((word, idx) => (
-                <span key={idx} className="block">{word}</span>
-              ))}
-            </div>
-            <div
-              className="text-white text-4xl tracking-widest flex flex-col items-end pr-10 relative"
-              style={{
-                top: '-300px',
-              }}
-            >
-              {`carried by the winds of curiosity.`.split(' ').map((word, idx) => (
-                <span key={idx} className="block">{word}</span>
-              ))}
-            </div>
-          </div>
-        </ParallaxLayer>
-
-        {/* Text Layer Split between Left and Right */}
-        <ParallaxLayer offset={0.9} speed={0.5} className="flex justify-center items-center">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 px-8">
-            <div className="relative group">
-              <div className="absolute inset-0 bg-black opacity-50 group-hover:opacity-0 transition-opacity duration-300"></div>
-              <div className="relative z-10 bg-white rounded-lg overflow-hidden shadow-lg transform group-hover:scale-110 transition-transform duration-300">
-                <img
-                  src="https://via.placeholder.com/300" // Replace with your project image
-                  alt="Project 1"
-                  className="w-full h-full object-cover"
-                />
-                <div className="p-4">
-                  <h3 className="text-xl font-bold">GitHub Project 1</h3>
-                  <p className="text-gray-500">This is a description of the project.</p>
-                  <a href="https://github.com/yourusername/project1" target="_blank" className="text-blue-500 mt-2 inline-block">View on GitHub</a>
-                </div>
-              </div>
-            </div>
-            {/* Repeat for other projects */}
-            <div className="relative group">
-              <div className="absolute inset-0 bg-black opacity-50 group-hover:opacity-0 transition-opacity duration-300"></div>
-              <div className="relative z-10 bg-white rounded-lg overflow-hidden shadow-lg transform group-hover:scale-110 transition-transform duration-300">
-                <img
-                  src="https://via.placeholder.com/300" // Replace with your project image
-                  alt="Project 2"
-                  className="w-full h-full object-cover"
-                />
-                <div className="p-4">
-                  <h3 className="text-xl font-bold">GitHub Project 2</h3>
-                  <p className="text-gray-500">This is another project description.</p>
-                  <a href="https://github.com/yourusername/project2" target="_blank" className="text-blue-500 mt-2 inline-block">View on GitHub</a>
-                </div>
-              </div>
-            </div>
-            {/* More projects can be added here */}
-          </div>
-        </ParallaxLayer>
-
-        {/* Second Parallax Layer (GitHub Projects and Hover Cards) */}
-        <ParallaxLayer offset={1} speed={0.5}>
-          
-        </ParallaxLayer>
-
-        <ParallaxLayer offset={2} speed={0.5}>
-          {/* Additional content */}
-        </ParallaxLayer>
-
-        <ParallaxLayer offset={3} speed={0.5}>
-          {/* Additional content */}
-        </ParallaxLayer>
-      </Parallax>
+    <main ref={container} className="relative h-[200vh]">
+      <LandingPage scrollYProgress={scrollYProgress} />
+      <Section2 scrollYProgress={scrollYProgress} slider={slider} firstText={firstText} secondText={secondText} />
     </main>
+  );
+}
+
+const Loader = () => {
+  return (
+    <div className="flex items-center justify-center h-screen bg-black">
+      <div className="relative w-32 h-32">
+        <svg
+          className="infinity-loader"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 100 50"
+        >
+          <path
+            d="M 10,25 C 20,5 40,5 50,25 C 60,45 80,45 90,25 C 80,5 60,5 50,25 C 40,45 20,45 10,25 Z"
+            fill="none"
+            stroke="white"
+            strokeWidth="5"
+            strokeLinecap="round"
+          />
+        </svg>
+        <style jsx>{`
+          .infinity-loader path {
+            stroke-dasharray: 223;
+            stroke-dashoffset: 0;
+            animation: dash 2s linear infinite;
+          }
+          @keyframes dash {
+            0% {
+              stroke-dashoffset: 150;
+            }
+            100% {
+              stroke-dashoffset: 0;
+            }
+          }
+        `}</style>
+      </div>
+
+      {/* Loading Text */}
+      <div className="absolute bottom-10 text-white text-xl animate-bounce">
+        Loading...
+      </div>
+    </div>
+  );
+};
+
+const LandingPage = ({ scrollYProgress }: { scrollYProgress: any }) => {
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 0.8]);
+  const rotate = useTransform(scrollYProgress, [0, 1], [0, -10]);
+
+  return (
+    <motion.div style={{ scale, rotate }} className="sticky top-0 h-screen bg-black text-[3.5vw] flex flex-col items-center justify-center text-white pb-[10vh]">
+      <div className="flex items-center justify-center h-full w-full">
+        <ThreeScene />
+      </div>
+      <div className="absolute left-0 right-0 flex justify-between items-start z-10">
+        <div
+          className="text-white text-4xl tracking-widest flex flex-col items-start pl-10 absolute top-10 left-10"
+          style={{
+            zIndex: 10,
+          }}
+        >
+          {"The waves of innovation are infinite".split(' ').map((word, idx) => (
+            <span key={idx} className="block">{word}</span>
+          ))}
+        </div>
+        <div
+          className="text-white text-4xl tracking-widest flex flex-col items-end pr-10 absolute bottom-10 right-10"
+          style={{
+            zIndex: 10,
+          }}
+        >
+          {"carried by the winds of curiosity.".split(' ').map((word, idx) => (
+            <span key={idx} className="block">{word}</span>
+          ))}
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+const Section2 = ({ scrollYProgress, slider, firstText, secondText }: { scrollYProgress: any, slider: any, firstText: any, secondText: any }) => {
+  const scale = useTransform(scrollYProgress, [0.5, 1], [1, 0.8]);
+  const rotate = useTransform(scrollYProgress, [0.5, 1], [0, -10]);
+
+  return (
+    <div className="relative flex h-screen mb-[100vh] overflow-hidden">
+      <Image 
+        src="/images/background.jpg"
+        fill={true}
+        alt="background"
+        className="object-cover"
+      />
+      <div className="absolute top-[calc(100vh-350px)]">
+        <div ref={slider} className="relative whitespace-nowrap">
+          <p ref={firstText} className="relative m-0 text-white text-[230px] font-medium pr-[50px]">Featured Projects -</p>
+          <p ref={secondText} className="absolute left-full top-0 m-0 text-white text-[230px] font-medium pr-[50px]">Featured Projects -</p>
+        </div>
+      </div>
+    </div>
   );
 }

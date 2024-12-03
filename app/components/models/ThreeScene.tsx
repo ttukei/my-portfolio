@@ -60,7 +60,7 @@ const Model = () => {
   const { camera } = useThree();
   useEffect(() => {
     // Position the camera to view the centered model
-    camera.position.set(0, 13, 30.8);
+    camera.position.set(0, 17, 30.8);
   }, [camera]);
 
   return (
