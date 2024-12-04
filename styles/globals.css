@@ -6,9 +6,10 @@
   font-family: 'Regular';
 }
 
-body{
-  font-family: 'Regular';
-  background-color: rgb(54, 188, 128);
+body {
+  font-family: 'DotGothic16', sans-serif;
+  background: url('/Images/background-7322409_1280.png'); /* Corrected path */
+  background-size: cover;
 }
 
 :root {
@@ -23,4 +24,51 @@ body{
     --background-start-rgb: 0, 0, 0;
     --background-end-rgb: 0, 0, 0;
   }
+}
+
+@keyframes moveBackground {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.noisy-background {
+  background-color: #111111; /* Update the noisy-background color */
+  position: relative;
+  overflow: hidden;
+}
+
+.noisy-background::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23111111"/><path d="M0 0h1v1H0z" fill="%23ffffff" fill-opacity=".08"/><path d="M1 1h1v1H1z" fill="%23ffffff" fill-opacity=".08"/></svg>');
+  opacity: 0.6; /* Increase opacity for better visibility */
+  pointer-events: none;
+}
+
+.hover-light-effect::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+
+.hover-light-effect:hover::after {
+  opacity: 1;
 }

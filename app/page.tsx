@@ -1,52 +1,47 @@
 'use client';
-import { useState, useEffect, useRef } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { useScroll, useTransform, motion } from 'framer-motion';
-import ThreeScene from './components/models/ThreeScene';
 import Image from 'next/image';
 import gsap from 'gsap';
-import styles from './page.module.scss'
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/free-mode";
+import { FreeMode, Pagination } from "swiper/modules";
+import { ServiceData } from "./constants";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Home() {
-  const [loading, setLoading] = useState(true);
   const container = useRef<HTMLDivElement>(null);
-  const firstText = useRef(null);
-  const secondText = useRef(null);
-  const slider = useRef(null);
+  const firstText = useRef<HTMLParagraphElement>(null);
+  const secondText = useRef<HTMLParagraphElement>(null);
+  const slider = useRef<HTMLDivElement>(null);
   let xPercent = 0;
   let direction = -1;
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   const { scrollYProgress } = useScroll({
     target: container,
-    offset: ["start start", "end end"]
+    offset: ["start start", "end end"],
   });
 
   useEffect(() => {
-    // Simulate loading time
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 20); // Adjust the loading time as needed
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
-    if (!loading) {
-      gsap.to(slider.current, {
-        scrollTrigger: {
-          trigger: document.documentElement,
-          scrub: 0.25,
-          start: 0,
-          end: window.innerHeight,
-          onUpdate: e => direction = e.direction * -1
+    gsap.to(slider.current, {
+      scrollTrigger: {
+        trigger: document.documentElement,
+        scrub: 0.25,
+        start: 0,
+        end: window.innerHeight,
+        onUpdate: (e) => {
+          direction = e.direction * -1;
         },
-        x: "-500px",
-      });
-      requestAnimationFrame(animate);
-    }
-  }, [loading]);
+      },
+      x: "-500px",
+    });
+    requestAnimationFrame(animate);
+  }, []);
 
   const animate = () => {
     if (xPercent < -100) {
@@ -60,107 +55,120 @@ export default function Home() {
     xPercent += 0.1 * direction;
   };
 
-  if (loading) {
-    return <Loader />;
-  }
+  // Mouse movement handler
+  const handleMouseMove = (e: React.MouseEvent) => {
+    const { clientX, clientY } = e;
+    const x = clientX / window.innerWidth;
+    const y = clientY / window.innerHeight;
+    setMousePosition({ x, y });
+  };
 
   return (
-    <main ref={container} className="relative h-[200vh]">
+    <main ref={container} className="relative h-[200vh] hover-container" onMouseMove={handleMouseMove}>
       <LandingPage scrollYProgress={scrollYProgress} />
-      <Section2 scrollYProgress={scrollYProgress} slider={slider} firstText={firstText} secondText={secondText} />
+      <Section2
+        scrollYProgress={scrollYProgress}
+        slider={slider}
+        firstText={firstText}
+        secondText={secondText}
+      />
     </main>
   );
 }
 
-const Loader = () => {
-  return (
-    <div className="flex items-center justify-center h-screen bg-black">
-      <div className="relative w-32 h-32">
-        <svg
-          className="infinity-loader"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 100 50"
-        >
-          <path
-            d="M 10,25 C 20,5 40,5 50,25 C 60,45 80,45 90,25 C 80,5 60,5 50,25 C 40,45 20,45 10,25 Z"
-            fill="none"
-            stroke="white"
-            strokeWidth="5"
-            strokeLinecap="round"
-          />
-        </svg>
-        <style jsx>{`
-          .infinity-loader path {
-            stroke-dasharray: 223;
-            stroke-dashoffset: 0;
-            animation: dash 2s linear infinite;
-          }
-          @keyframes dash {
-            0% {
-              stroke-dashoffset: 150;
-            }
-            100% {
-              stroke-dashoffset: 0;
-            }
-          }
-        `}</style>
-      </div>
-
-      {/* Loading Text */}
-      <div className="absolute bottom-10 text-white text-xl animate-bounce">
-        Loading...
-      </div>
-    </div>
-  );
-};
-
 const LandingPage = ({ scrollYProgress }: { scrollYProgress: any }) => {
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 0.8]);
-  const rotate = useTransform(scrollYProgress, [0, 1], [0, -10]);
+  const scale = useTransform(scrollYProgress, [0.1, 1], [1, 0.8]);
+  const rotate = useTransform(scrollYProgress, [0.1, 1], [0, -10]);
+  const [mousePosition, setMousePosition] = useState({ x: -1, y: -1 });
+
+  const handleMouseMove = (e: MouseEvent) => {
+    setMousePosition({ x: e.clientX, y: e.clientY });
+  };
+
+  const handleMouseLeave = () => {
+    setMousePosition({ x: -1, y: -1 });
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseleave', handleMouseLeave);
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseleave', handleMouseLeave);
+    };
+  }, []);
 
   return (
-    <motion.div style={{ scale, rotate }} className="sticky top-0 h-screen bg-black text-[3.5vw] flex flex-col items-center justify-center text-white pb-[10vh]">
-      <div className="flex items-center justify-center h-full w-full">
-        <ThreeScene />
-      </div>
-      <div className="absolute left-0 right-0 flex justify-between items-start z-10">
-        <div
-          className="text-white text-4xl tracking-widest flex flex-col items-start pl-10 absolute top-10 left-10"
-          style={{
-            zIndex: 10,
-          }}
-        >
-          {"The waves of innovation are infinite".split(' ').map((word, idx) => (
-            <span key={idx} className="block">{word}</span>
-          ))}
+    <motion.div
+      style={{ scale, rotate }}
+      className="sticky top-0 h-screen text-[3.5vw] flex flex-col items-center justify-center text-white pb-[10vh] noisy-background"
+    >
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: mousePosition.x === -1 && mousePosition.y === -1
+            ? 'none'
+            : `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(255, 255, 255, 0.08), rgba(17, 17, 17, 0) 50%)`,
+        }}
+      />
+      <header className=" absolute top-0 left-0 right-0 flex justify-between items-center z-20 text-gray-300">
+        <div className="font-dotgothic flex-1 text-center">
+          <div>Timon Tukei</div>
         </div>
-        <div
-          className="text-white text-4xl tracking-widest flex flex-col items-end pr-10 absolute bottom-10 right-10"
-          style={{
-            zIndex: 10,
-          }}
-        >
-          {"carried by the winds of curiosity.".split(' ').map((word, idx) => (
-            <span key={idx} className="block">{word}</span>
-          ))}
+        <div className="flex-1 text-center">
+          <div>Developer</div>
         </div>
-      </div>
+        <div className="flex-1 text-center">
+          <div>Seattle, Washington</div>
+        </div>
+      </header>
     </motion.div>
   );
 };
 
-const Section2 = ({ scrollYProgress, slider, firstText, secondText }: { scrollYProgress: any, slider: any, firstText: any, secondText: any }) => {
-  const scale = useTransform(scrollYProgress, [0.5, 1], [1, 0.8]);
-  const rotate = useTransform(scrollYProgress, [0.5, 1], [0, -10]);
+const Section2 = ({
+  scrollYProgress,
+  slider,
+  firstText,
+  secondText,
+}: {
+  scrollYProgress: any;
+  slider: any;
+  firstText: any;
+  secondText: any;
+}) => {
+  const [mousePosition, setMousePosition] = useState({ x: -1, y: -1 });
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+
+    const handleMouseLeave = () => {
+      setMousePosition({ x: -1, y: -1 });
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseleave', handleMouseLeave);
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseleave', handleMouseLeave);
+    };
+  }, []);
 
   return (
-    <div className="relative flex h-screen mb-[100vh] overflow-hidden">
-      <Image 
-        src="/images/background.jpg"
-        fill={true}
-        alt="background"
-        className="object-cover"
+    <div className="relative flex flex-col h-screen mb-[100vh] overflow-hidden noisy-background">
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: mousePosition.x === -1 && mousePosition.y === -1
+            ? 'none'
+            : `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0) 50%)`,
+        }}
       />
+      <div className="mt-[-50px]"> {/* Adjust this margin to move the slider up */}
+        <ActiveSlider />
+      </div>
       <div className="absolute top-[calc(100vh-350px)]">
         <div ref={slider} className="relative whitespace-nowrap">
           <p ref={firstText} className="relative m-0 text-white text-[230px] font-medium pr-[50px]">Featured Projects -</p>
@@ -169,4 +177,41 @@ const Section2 = ({ scrollYProgress, slider, firstText, secondText }: { scrollYP
       </div>
     </div>
   );
-}
+};
+
+const ActiveSlider = () => {
+  return (
+    <div className="flex items-center justify-center flex-col h-[900px] bg-[#F5F5F5]">
+      <Swiper
+        breakpoints={{
+          340: {
+            slidesPerView: 2,
+            spaceBetween: 15,
+          },
+          700: {
+            slidesPerView: 3,
+            spaceBetween: 15,
+          },
+        }}
+        freeMode={true}
+        modules={[FreeMode]}
+        className="max-w-[90%] lg:max-w-[80%]"
+      >
+        {ServiceData.map((item) => (
+          <SwiperSlide key={item.title}>
+            <div className="flex flex-col gap-6 mb-20 group relative shadow-lg text-white rounded-xl px-6 py-8 h-[250px] w-[215px] lg:h-[400px] lg:w-[350px] overflow-hidden cursor-pointer">
+              <div
+                className="absolute inset-0 bg-cover bg-center transition-transform duration-300 ease-in-out transform group-hover:scale-110"
+              />
+              <div className="relative z-10">
+                <item.icon className="text-4xl mb-4" />
+                <h3 className="text-2xl font-bold">{item.title}</h3>
+                <p>{item.content}</p>
+              </div>
+            </div>
+          </SwiperSlide>
+        ))}
+      </Swiper>
+    </div>
+  );
+};

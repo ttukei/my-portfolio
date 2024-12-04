@@ -1,19 +1,18 @@
-import type { Config } from "tailwindcss";
+const { fontFamily } = require('tailwindcss/defaultTheme');
 
-const config: Config = {
+module.exports = {
   content: [
-    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    './app/**/*.{js,ts,jsx,tsx}',
+    './pages/**/*.{js,ts,jsx,tsx}',
+    './components/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
     extend: {
-      colors: {
-        background: "#ffffff",
-        foreground: "#ffffff",
+      fontFamily: {
+        sans: [...fontFamily.sans], // Default sans stack
+        dotgothic: ['DotGothic16', 'sans-serif'], // Add DotGothic16
       },
     },
   },
-  plugins: [require('tailwind-scrollbar')],
+  plugins: [],
 };
-export default config;

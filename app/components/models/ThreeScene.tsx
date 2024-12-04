@@ -1,11 +1,13 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { useGLTF, OrbitControls, Environment } from '@react-three/drei';
+import { useGLTF, Environment } from '@react-three/drei';
 import * as THREE from 'three';
 
 const Model = () => {
-  const groupRef = useRef<THREE.Group | null>(null);
-  const modelRef = useRef<THREE.Object3D | null>(null);
+  const groupRef = useRef<THREE.Group>(null);
+  const modelRef = useRef<THREE.Object3D>(null);
+  const [rotationSpeed, setRotationSpeed] = useState(0.038); // Initial rotation speed
+  const [isSlowingDown, setIsSlowingDown] = useState(false); // State to manage slowing down
 
   // Load the GLTF model with Draco compression
   const { scene } = useGLTF('/models/scene-transformed.glb', 'https://www.gstatic.com/draco/v1/decoders/');
@@ -51,9 +53,7 @@ const Model = () => {
   // Rotate the model along all of its axes on each frame
   useFrame(() => {
     if (groupRef.current) {
-      groupRef.current.rotation.x += 0.038; // Adjust the rotation speed as needed
-      //groupRef.current.rotation.y += 0.01; // Adjust the rotation speed as needed
-      //groupRef.current.rotation.z += 0.01; // Adjust the rotation speed as needed
+      groupRef.current.rotation.x += rotationSpeed; // Use the rotation speed state
     }
   });
 
@@ -63,8 +63,29 @@ const Model = () => {
     camera.position.set(0, 17, 30.8);
   }, [camera]);
 
+  const handleClick = () => {
+    setRotationSpeed(rotationSpeed + 0.05); // Increase the rotation speed on click
+    setIsSlowingDown(true); // Start slowing down
+  };
+
+  useEffect(() => {
+    if (isSlowingDown) {
+      const interval = setInterval(() => {
+        setRotationSpeed((prevSpeed) => Math.max(prevSpeed - 0.001, 0.038)); // Gradually decrease the speed
+      }, 100);
+
+      return () => clearInterval(interval); // Clear the interval when the component unmounts or isSlowingDown changes
+    }
+  }, [isSlowingDown]);
+
+  useEffect(() => {
+    if (rotationSpeed > 0.2) {
+      setRotationSpeed(0.1); // Cap the rotation speed
+    }
+  }, [rotationSpeed]);
+
   return (
-    <group ref={groupRef}>
+    <group ref={groupRef} onClick={handleClick}>
       <primitive object={scene} ref={modelRef} />
     </group>
   );
@@ -72,7 +93,7 @@ const Model = () => {
 
 const ThreeScene = () => {
   return (
-    <Canvas className="bg-black">
+    <Canvas>
       <ambientLight intensity={0.5} />
       <pointLight position={[10, 10, 10]} intensity={30} />
       <Model />
