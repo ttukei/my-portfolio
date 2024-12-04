@@ -64,7 +64,7 @@ export default function Home() {
   };
 
   return (
-    <main ref={container} className="relative h-[200vh] hover-container" onMouseMove={handleMouseMove}>
+    <main ref={container} className="relative h-[200vh] hover-container font-dotgothic" onMouseMove={handleMouseMove}>
       <LandingPage scrollYProgress={scrollYProgress} />
       <Section2
         scrollYProgress={scrollYProgress}
@@ -100,30 +100,37 @@ const LandingPage = ({ scrollYProgress }: { scrollYProgress: any }) => {
 
   return (
     <motion.div
-      style={{ scale, rotate }}
-      className="sticky top-0 h-screen text-[3.5vw] flex flex-col items-center justify-center text-white pb-[10vh] noisy-background"
-    >
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: mousePosition.x === -1 && mousePosition.y === -1
-            ? 'none'
-            : `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(255, 255, 255, 0.08), rgba(17, 17, 17, 0) 50%)`,
-        }}
-      />
-      <header className="absolute top-0 left-0 right-0 flex justify-between items-center z-20 text-gray-300">
-        <div className="flex-1 text-center">
-          <div className='font-dotgothic'>Timon Tukei</div>
-        </div>
-        <div className="flex-1 text-center">
-          <div>Developer</div>
-        </div>
-        <div className="flex-1 text-center">
-          <div>Seattle, Washington</div>
-        </div>
-      </header>
-    </motion.div>
+  style={{ scale, rotate }}
+  className="sticky top-0 h-screen text-[2vw] text-white pb-[10vh] noisy-background"
+>
+  <div
+    className="absolute inset-0 pointer-events-none"
+    style={{
+      background:
+        mousePosition.x === -1 && mousePosition.y === -1
+          ? "none"
+          : `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(255, 255, 255, 0.08), rgba(17, 17, 17, 0) 50%)`,
+    }}
+  />
+  <div className="absolute top-0 left-0 right-0 flex items-center justify-center h-full z-20 text-gray-300">
+    {/* Name in the center */}
+    <div className="absolute top-[1.5%] font-dotgothic text-center">
+      Timon Tukei
+    </div>
+
+    {/* Vertical "Developer" on the left, centered */}
+    <div className="absolute top-[50%] left-[1.5%]  -translate-y-1/2 -rotate-90 origin-left justify-center">
+      Developer
+    </div>
+
+    {/* Location on the right */}
+    <div className="absolute top-[60%] right-[1.5%] -translate-y-1/2 -rotate-90 -rotate-90 rotate-90 origin-right">
+      Seattle, Washington
+    </div>
+  </div>
+</motion.div>
   );
+  
 };
 
 const Section2 = ({
