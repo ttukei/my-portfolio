@@ -1,18 +1,22 @@
-const { fontFamily } = require('tailwindcss/defaultTheme');
+import type { Config } from "tailwindcss";
 
-module.exports = {
+const config: Config = {
   content: [
-    './app/**/*.{js,ts,jsx,tsx}',
-    './pages/**/*.{js,ts,jsx,tsx}',
-    './components/**/*.{js,ts,jsx,tsx}',
+    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
+      colors: {
+        background: "var(--background)",
+        foreground: "var(--foreground)",
+      },
       fontFamily: {
-        sans: [...fontFamily.sans], // Default sans stack
-        dotgothic: ['DotGothic16', 'sans-serif'], // Add DotGothic16
+        dotgothic: "var(--font-dotgothic)",
       },
     },
   },
   plugins: [],
 };
+export default config;

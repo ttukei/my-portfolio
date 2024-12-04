@@ -111,9 +111,9 @@ const LandingPage = ({ scrollYProgress }: { scrollYProgress: any }) => {
             : `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(255, 255, 255, 0.08), rgba(17, 17, 17, 0) 50%)`,
         }}
       />
-      <header className=" absolute top-0 left-0 right-0 flex justify-between items-center z-20 text-gray-300">
-        <div className="font-dotgothic flex-1 text-center">
-          <div>Timon Tukei</div>
+      <header className="absolute top-0 left-0 right-0 flex justify-between items-center z-20 text-gray-300">
+        <div className="flex-1 text-center">
+          <div className='font-dotgothic'>Timon Tukei</div>
         </div>
         <div className="flex-1 text-center">
           <div>Developer</div>
@@ -166,13 +166,13 @@ const Section2 = ({
             : `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0) 50%)`,
         }}
       />
-      <div className="mt-[-50px]"> {/* Adjust this margin to move the slider up */}
+      <div className="mt-[-150px]"> {/* Adjust this margin to move the slider up */}
         <ActiveSlider />
       </div>
       <div className="absolute top-[calc(100vh-350px)]">
         <div ref={slider} className="relative whitespace-nowrap">
-          <p ref={firstText} className="relative m-0 text-white text-[230px] font-medium pr-[50px]">Featured Projects -</p>
-          <p ref={secondText} className="absolute left-full top-0 m-0 text-white text-[230px] font-medium pr-[50px]">Featured Projects -</p>
+          <p ref={firstText} className="font-dotgothic relative m-0 text-black text-[230px] font-medium pr-[50px]">Featured Projects -</p>
+          <p ref={secondText} className="absolute left-full top-0 m-0 text-black text-[230px] font-medium pr-[50px]">Featured Projects -</p>
         </div>
       </div>
     </div>
@@ -199,12 +199,12 @@ const ActiveSlider = () => {
       >
         {ServiceData.map((item) => (
           <SwiperSlide key={item.title}>
-            <div className="flex flex-col gap-6 mb-20 group relative shadow-lg text-white rounded-xl px-6 py-8 h-[250px] w-[215px] lg:h-[400px] lg:w-[350px] overflow-hidden cursor-pointer">
+            <div className="flex flex-col gap-6 mb-20 group relative shadow-lg text-black rounded-xl px-6 py-8 h-[250px] w-[215px] lg:h-[400px] lg:w-[350px] overflow-hidden cursor-pointer">
               <div
                 className="absolute inset-0 bg-cover bg-center transition-transform duration-300 ease-in-out transform group-hover:scale-110"
+                style={{ backgroundImage: `url(${item.backgroundImage})` }}
               />
               <div className="relative z-10">
-                <item.icon className="text-4xl mb-4" />
                 <h3 className="text-2xl font-bold">{item.title}</h3>
                 <p>{item.content}</p>
               </div>

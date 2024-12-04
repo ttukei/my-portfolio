@@ -1,54 +1,54 @@
-import {
-    RxCrop,
-    RxDesktop,
-    RxPencil2,
-    RxReader,
-    RxRocket,
-    RxAccessibility,
-  } from "react-icons/rx";
-  
-const SpaceCity1 = "/images/image.jpg";
-const SpaceCity5 = "/images/image.jpg";
-const SpaceCity6 = "/images/image.jpg";
-const SpaceCity7 = "/images/image.jpg";
-const SpaceCity8 = "/images/image.jpg";
-const SpaceCity9 = "/images/image.jpg";
+const SpaceCity1 = "/Images/image.png";
+const SpaceCity5 = "/Images/image.png";
+const SpaceCity6 = "/Images/image.png";
+const SpaceCity7 = "/Images/image.png";
+const SpaceCity8 = "/Images/image.png";
+const SpaceCity9 = "/Images/image.png";
   
   export const ServiceData = [
     {
-      icon: RxCrop,
-      title: "Development",
+      title: "Parallel Matrix Multiplier",
       content: "Lorem ipsum dolor sit /amet, consectetur adipiscing elit.",
       backgroundImage: SpaceCity9,
     },
     {
-      icon: RxPencil2,
-      title: "Branding",
+      title: "Page Table Walker",
       content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
       backgroundImage: SpaceCity1,
     },
     {
-      icon: RxDesktop,
-      title: "Design",
+      title: "Obstruction",
       content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
       backgroundImage: SpaceCity6,
     },
     {
-      icon: RxReader,
-      title: "Seo",
+      title: "Sherlock Holmes Story Generater",
       content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
       backgroundImage: SpaceCity7,
     },
     {
-      icon: RxAccessibility,
-      title: "Management",
+      title: "Quine",
       content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
       backgroundImage: SpaceCity5,
     },
     {
-      icon: RxRocket,
-      title: "Production",
+      title: "Twitter language models about Ukraine",
       content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
       backgroundImage: SpaceCity8,
     },
+    {
+      title: "Dungeon Adventure",
+      content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      backgroundImage: SpaceCity8,
+    },
+    {
+      title: "Calculator",
+      content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      backgroundImage: SpaceCity8,
+    },
+    {
+      title: "RadixSort",
+      content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      backgroundImage: SpaceCity8,
+    }
   ];
