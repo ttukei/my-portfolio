@@ -8,7 +8,7 @@
 
 body {
   font-family: 'DotGothic16', sans-serif;
-  background: url('/Images/background-7322409_1280.png'); /* Corrected path */
+  background: url('/Images/body-background.png'); /* Corrected path */
   background-size: cover;
 }
 
