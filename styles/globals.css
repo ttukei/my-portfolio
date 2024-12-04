@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-
+/* Add custom styles here */
 body {
   font-family: 'DotGothic16', sans-serif;
   background: url('/Images/body-background.png'); /* Corrected path */
