@@ -9,10 +9,15 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/free-mode";
 import { FreeMode, Pagination } from "swiper/modules";
+import Lenis from '@studio-freight/lenis';
 import { ServiceData } from "./constants";
-
+import Paragraph from './components/Word';
+import Word from './components/Paragraph';
+import Character from './components/Character';
 gsap.registerPlugin(ScrollTrigger);
 
+
+// Main component for the Home page
 export default function Home() {
   const container = useRef<HTMLDivElement>(null);
   const firstText = useRef<HTMLParagraphElement>(null);
@@ -24,9 +29,22 @@ export default function Home() {
 
   const { scrollYProgress } = useScroll({
     target: container,
-    offset: ["start start", "end end"],
+    offset: ["start start", "end end"]
   });
 
+  // Lenis smooth scrolling setup
+  useEffect(() => {
+    const lenis = new Lenis();
+
+    function raf(time: number) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+
+    requestAnimationFrame(raf);
+  }, []);
+
+  // GSAP animation for the slider
   useEffect(() => {
     gsap.to(slider.current, {
       scrollTrigger: {
@@ -35,7 +53,7 @@ export default function Home() {
         start: 0,
         end: window.innerHeight,
         onUpdate: (e) => {
-          direction = e.direction * -1;
+          direction = e.direction * -1.5;
         },
       },
       x: "-500px",
@@ -43,6 +61,7 @@ export default function Home() {
     requestAnimationFrame(animate);
   }, []);
 
+  // Animation function for the text
   const animate = () => {
     if (xPercent < -100) {
       xPercent = 0;
@@ -55,7 +74,7 @@ export default function Home() {
     xPercent += 0.1 * direction;
   };
 
-  // Mouse movement handler
+  // Mouse move handler to update mouse position state
   const handleMouseMove = (e: React.MouseEvent) => {
     const { clientX, clientY } = e;
     const x = clientX / window.innerWidth;
@@ -64,8 +83,11 @@ export default function Home() {
   };
 
   return (
-    <main ref={container} className="relative h-[200vh] hover-container font-dotgothic" onMouseMove={handleMouseMove}>
-      <LandingPage scrollYProgress={scrollYProgress} />
+    <main ref={container} className="relative h-[200vh] hover-container" onMouseMove={handleMouseMove}>
+      <LandingPage scrollYProgress={scrollYProgress}
+      slider={slider}
+      firstText={firstText}
+      secondText={secondText} />
       <Section2
         scrollYProgress={scrollYProgress}
         slider={slider}
@@ -76,11 +98,25 @@ export default function Home() {
   );
 }
 
-const LandingPage = ({ scrollYProgress }: { scrollYProgress: any }) => {
+// Component for the landing page section
+const LandingPage = (
+  {
+    scrollYProgress,
+    slider,
+    firstText,
+    secondText,
+  }: {
+    scrollYProgress: any;
+    slider: any;
+    firstText: any;
+    secondText: any;
+  }
+) => {
   const scale = useTransform(scrollYProgress, [0.1, 1], [1, 0.8]);
   const rotate = useTransform(scrollYProgress, [0.1, 1], [0, -10]);
   const [mousePosition, setMousePosition] = useState({ x: -1, y: -1 });
 
+  // Mouse move and leave handlers to update mouse position state
   const handleMouseMove = (e: MouseEvent) => {
     setMousePosition({ x: e.clientX, y: e.clientY });
   };
@@ -89,6 +125,7 @@ const LandingPage = ({ scrollYProgress }: { scrollYProgress: any }) => {
     setMousePosition({ x: -1, y: -1 });
   };
 
+  // Add event listeners for mouse move and leave
   useEffect(() => {
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseleave', handleMouseLeave);
@@ -99,126 +136,51 @@ const LandingPage = ({ scrollYProgress }: { scrollYProgress: any }) => {
   }, []);
 
   return (
-    <motion.div
-  style={{ scale, rotate }}
-  className="sticky top-0 h-screen text-[2vw] text-white pb-[10vh] noisy-background"
->
-  <div
-    className="absolute inset-0 pointer-events-none"
-    style={{
-      background:
-        mousePosition.x === -1 && mousePosition.y === -1
-          ? "none"
-          : `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(255, 255, 255, 0.08), rgba(17, 17, 17, 0) 50%)`,
-    }}
-  />
-  <div className="absolute top-0 left-0 right-0 flex items-center justify-center h-full z-20 text-gray-300">
-    {/* Name in the center */}
-    <div className="absolute top-[1.5%] font-dotgothic text-center">
-      Timon Tukei
-    </div>
-
-    {/* Vertical "Developer" on the left, centered */}
-    <div className="absolute top-[50%] left-[1.5%]  -translate-y-1/2 -rotate-90 origin-left justify-center">
-      Developer
-    </div>
-
-    {/* Location on the right */}
-    <div className="absolute top-[60%] right-[1.5%] -translate-y-1/2 -rotate-90 -rotate-90 rotate-90 origin-right">
-      Seattle, Washington
-    </div>
-  </div>
-</motion.div>
-  );
-  
-};
-
-const Section2 = ({
-  scrollYProgress,
-  slider,
-  firstText,
-  secondText,
-}: {
-  scrollYProgress: any;
-  slider: any;
-  firstText: any;
-  secondText: any;
-}) => {
-  const [mousePosition, setMousePosition] = useState({ x: -1, y: -1 });
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-    };
-
-    const handleMouseLeave = () => {
-      setMousePosition({ x: -1, y: -1 });
-    };
-
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseleave', handleMouseLeave);
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseleave', handleMouseLeave);
-    };
-  }, []);
-
-  return (
-    <div className="relative flex flex-col h-screen mb-[100vh] overflow-hidden noisy-background">
+    <motion.div style={{scale, rotate}} className="sticky top-0 h-screen text-[3.5vw] flex flex-col items-center justify-center text-white pb-[10vh] noisy-background-black">
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: mousePosition.x === -1 && mousePosition.y === -1
-            ? 'none'
-            : `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0) 50%)`,
+          background:
+            mousePosition.x === -1 && mousePosition.y === -1
+              ? "none"
+              : `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(255, 255, 255, 0.08), rgba(17, 17, 17, 0) 70%)`,
         }}
       />
-      <div className="mt-[-150px]"> {/* Adjust this margin to move the slider up */}
-        <ActiveSlider />
-      </div>
-      <div className="absolute top-[calc(100vh-350px)]">
-        <div ref={slider} className="relative whitespace-nowrap">
-          <p ref={firstText} className="font-dotgothic relative m-0 text-black text-[230px] font-medium pr-[50px]">Featured Projects -</p>
-          <p ref={secondText} className="absolute left-full top-0 m-0 text-black text-[230px] font-medium pr-[50px]">Featured Projects -</p>
+      <div className="absolute top-0 left-0 right-0 flex items-center justify-center h-full z-20 text-gray-300">
+        <header className="fixed top-0 left-0 right-0 flex items-center justify-between">
+          <div className="flex justify-between w-full text-[1.8vw]">
+            <p className="text-left px-10">Timon Tukei</p>
+            <p className="text-center">Seatlle, Washington</p>
+            <p className="text-right px-10">Developer</p>
+          </div>
+        </header>
+        <div className="absolute top-[calc(100vh-300px)]">
+          <div ref={slider} className="relative whitespace-nowrap">
+            <p ref={firstText} className="absolute relative m-0 text-white text-[230px] font-medium pr-[50px]">Hello 你好 Hola नमस्ते </p>
+            <p ref={secondText} className="absolute left-full top-0 m-0 text-white text-[230px] font-medium pr-[50px] ">Hello 你好 Hola नमस्ते </p>
+          </div>
         </div>
       </div>
+    </motion.div>
+  );
+};
+
+// Component for the second section
+const Section2 = () => {
+ return (
+    <div className="h-screen w-full bg-white">
+      <About />
     </div>
   );
 };
 
-const ActiveSlider = () => {
+// Component for the active slider
+const About = () => { 
+
   return (
-    <div className="flex items-center justify-center flex-col h-[900px] bg-[#F5F5F5]">
-      <Swiper
-        breakpoints={{
-          340: {
-            slidesPerView: 2,
-            spaceBetween: 15,
-          },
-          700: {
-            slidesPerView: 3,
-            spaceBetween: 15,
-          },
-        }}
-        freeMode={true}
-        modules={[FreeMode]}
-        className="max-w-[90%] lg:max-w-[80%]"
-      >
-        {ServiceData.map((item) => (
-          <SwiperSlide key={item.title}>
-            <div className="flex flex-col gap-6 mb-20 group relative shadow-lg text-black rounded-xl px-6 py-8 h-[250px] w-[215px] lg:h-[400px] lg:w-[350px] overflow-hidden cursor-pointer">
-              <div
-                className="absolute inset-0 bg-cover bg-center transition-transform duration-300 ease-in-out transform group-hover:scale-110"
-                style={{ backgroundImage: `url(${item.backgroundImage})` }}
-              />
-              <div className="relative z-10">
-                <h3 className="text-2xl font-bold">{item.title}</h3>
-                <p>{item.content}</p>
-              </div>
-            </div>
-          </SwiperSlide>
-        ))}
-      </Swiper>
+    <div className='absolute w-full bg-white flex items-center justify-center'>
+      <div className="h-screen"></div>
+      <Character paragraph="I am a creative developer from Uganda, Kampala." />
     </div>
   );
 };

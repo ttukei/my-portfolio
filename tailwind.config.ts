@@ -13,7 +13,7 @@ const config: Config = {
         foreground: "var(--foreground)",
       },
       fontFamily: {
-        dotgothic: "var(--font-dotgothic)",
+        bespokeslab: "var(--font-bespokeslab)",
       },
     },
   },
