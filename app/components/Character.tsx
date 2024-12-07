@@ -17,7 +17,7 @@ export default function Paragraph({paragraph} : ParagraphProps) {
   return (
     <p 
       ref={container}         
-      className="paragraph"
+      className="paragraph" 
     >
     {
       words.map( (word, i) => {

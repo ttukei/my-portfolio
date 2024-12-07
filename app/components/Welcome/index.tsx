@@ -1,6 +1,6 @@
 import { useTransform, motion } from "framer-motion";
 import InfinitHello from "./InfiniteHello";
-import MouseShadow from "./MouseShadow";
+import MouseShadow from "../MouseShadow";
 import { useRef } from "react";
 
 const Welcome = (

@@ -7,7 +7,12 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from '@studio-freight/lenis';
 import Welcome from './components/Welcome';
 
-import About  from './components/About';
+import About  from './components/AboutProjectsWork';
+import React from 'react';
+
+import StickyFooter from './components/StickyFooter';
+
+
 
 
 gsap.registerPlugin(ScrollTrigger);
@@ -15,6 +20,8 @@ gsap.registerPlugin(ScrollTrigger);
 
 // Main component for the Home page
 export default function Home() {
+
+  const background = useRef<HTMLDivElement>(null);
   const container = useRef<HTMLDivElement>(null);
   const firstText = useRef<HTMLParagraphElement>(null);
   const secondText = useRef<HTMLParagraphElement>(null);
@@ -78,6 +85,12 @@ export default function Home() {
     setMousePosition({ x, y });
   };
 
+  const setBackground = (isActive: boolean) => {
+    if (background.current) {
+      background.current.style.opacity = isActive ? '0.8' : '0';
+    }
+  }
+
   return (
     <main ref={container} className="relative h-[200vh] hover-container font-bespokeslab" onMouseMove={handleMouseMove}>
 
@@ -88,6 +101,9 @@ export default function Home() {
       secondText={secondText}
       />
       <About scrollYProgress={scrollYProgress} />
+      <div className='w-full h-screen bg-red-500'></div>
+      <StickyFooter />
     </main>
   );
 }
+

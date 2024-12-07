@@ -3,6 +3,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { useTransform, motion } from "framer-motion";
 import Character from "../Character";
+import Projects from "../FeaturedProjects";
 
 
 function About (
@@ -52,18 +53,25 @@ function About (
         <motion.div style={{scale, rotate}} className="sticky top-0 h-screen text-[3.5vw] flex flex-col items-center justify-center text-black pb-[10vh] bg-white scroll-section">
           <Character paragraph="I'm Tim, a creative developer from Kampala, Uganda." />
         </motion.div>
-        <div className="scroll-section bg-black text-white">
-        <h1> Breif About Me</h1> 
-          </div>
+        <div className="scroll-section bg-[#111111]">
+            <p className="flex text-[60px] leading-none p-[40px] max-w-[1280px] text-white flex-wrap">
+              I am passionate about developing efficient, scalable, and user-friendly applications.
+              <span className="relative mr-[12px] mt-[12px]">
+              </span>
+            </p>
+        </div>
+
           <div className="scroll-section bg-white text-black">
-            <h1>Projects</h1> 
+            <Projects />
           </div>
-          <div className="scroll-section bg-black text-white">
+
+          <div className="scroll-section bg-[#111111] text-white">
             <h1>Works</h1> 
           </div>
         </div>
       </div>
-     </section> 
+     </section>
+     
   );
 }
 
